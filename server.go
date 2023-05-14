@@ -24,7 +24,7 @@ const (
 // CredentialsVerifier defines the interface of the user and client credentials Verifier.
 type CredentialsVerifier interface {
 	// Validate username and password returning an error if the user credentials are wrong
-	ValidateUser(username, password, scope string, r *http.Request) ([]string, error)
+	ValidateUser(username, password string, r *http.Request) ([]string, error)
 	// Get userdata and password returning an error if the user credentials are wrong
 
 	GetUserData(username, scope string, r *http.Request) (map[string]string, error)

@@ -24,7 +24,7 @@ func TestTokenEndpoint(t *testing.T) {
 	q.Add("redirect_uri", "http://localhost:8080")
 
 	clientId := []string{"clientID"}
-	token, refreshToken, idtoken, err := bs.generateIdTokens("RS256", clientId, UserToken, "user111", "openid", "test", []string{"group1"}, at, req)
+	token, refreshToken, idtoken, err := bs.generateIdTokens("RS256", clientId, UserToken, "user111", "test", []string{"group1"}, at, req)
 
 	t.Run("TokenEndPoint Test 1", func(t *testing.T) {
 		assertNoError(t, err)

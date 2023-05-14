@@ -30,7 +30,7 @@ type Cookie struct {
 }
 
 // Generate token response
-func (bs *BearerServer) GenerateIdTokenResponse(codeCheck CodeCheck, method, iss string, aud []string, grantType GrantType, refreshToken string, scope string, code string, redirectURI string, at AuthToken, w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
+func (bs *BearerServer) GenerateIdTokenResponse(codeCheck CodeCheck, method, iss string, aud []string, grantType GrantType, refreshToken string, code string, redirectURI string, at AuthToken, w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
 	/* var credential string
 	parsedJwt, err := ParseJWT(code, &bs.Kc.Pk["test"].PublicKey)
 	if err != nil {
@@ -81,12 +81,12 @@ func (bs *BearerServer) GenerateIdTokenResponse(codeCheck CodeCheck, method, iss
 			return "Not authorized", http.StatusOK, nil
 		} */
 
-		groups, err := bs.Verifier.ValidateUser(sub, "secret", scope, r)
+		groups, err := bs.Verifier.ValidateUser(sub, "secret", r)
 		if err != nil {
 			log.Err(err).Msg("Failed getting groups")
 		}
 
-		token, refresh, idtoken, err := bs.generateIdTokens("RS256", aud, UserToken, sub, scope, nonce, groups, at, r)
+		token, refresh, idtoken, err := bs.generateIdTokens("RS256", aud, UserToken, sub, nonce, groups, at, r)
 		if err != nil {
 			return "Token generation failed, check claims", http.StatusInternalServerError, err
 		}
@@ -129,17 +129,17 @@ func (bs *BearerServer) GenerateIdTokenResponse(codeCheck CodeCheck, method, iss
 	return resp, http.StatusOK, nil
 }
 
-func refreshToken(tokenId string, username string, tokenType TokenType, scope string) *RefreshToken {
-	refreshToken := &RefreshToken{RefreshTokenID: uuid.Must(uuid.NewV4()).String(), TokenID: tokenId, CreationDate: time.Now().UTC(), Credential: username, TokenType: tokenType, Scope: scope}
+func refreshToken(tokenId string, username string, tokenType TokenType) *RefreshToken {
+	refreshToken := &RefreshToken{RefreshTokenID: uuid.Must(uuid.NewV4()).String(), TokenID: tokenId, CreationDate: time.Now().UTC(), Credential: username, TokenType: tokenType, Scope: "scope"}
 	return refreshToken
 }
 
-func (bs *BearerServer) generateIdTokens(method string, aud []string, tokenType TokenType, username, scope, nonce string, groups []string, at AuthToken, r *http.Request) (string, *RefreshToken, string, error) {
+func (bs *BearerServer) generateIdTokens(method string, aud []string, tokenType TokenType, username, nonce string, groups []string, at AuthToken, r *http.Request) (string, *RefreshToken, string, error) {
 	claims := bs.Verifier.CreateClaims(username, aud, nonce, groups, at, r)
 
 	token, _ := CreateJWT(method, claims, bs.Kc)
 	idtoken, _ := CreateJWT(method, claims, bs.Kc)
-	refreshToken := refreshToken(aud[0], username, tokenType, scope)
+	refreshToken := refreshToken(aud[0], username, tokenType)
 
 	return token, refreshToken, idtoken, nil
 }

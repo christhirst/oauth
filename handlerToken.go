@@ -12,13 +12,15 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 	bs.Verifier.SessionGet(w, r, "code")
 	var at AuthToken
 	var code string
-	getFormData([]string{""}, r)
+	//getFormData([]string{"grant_type"}, r)
+
 	grant_type := GrantType(r.FormValue("grant_type"))
-	scope := r.FormValue("scope")
-	aud := r.FormValue("client_id")
+
+	//scope := r.FormValue("scope")
+	/* aud := r.FormValue("client_id")
 	if aud == "" {
 		log.Error().Msg("Audience not present")
-	}
+	} */
 
 	if r.FormValue("code") != "" {
 		code = r.FormValue("code")
@@ -28,7 +30,7 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("eeeeeee", d, ok)
 	iss := r.Host
 	fmt.Println(iss)
-	resp, returncode, err := bs.GenerateIdTokenResponse(d, "RS256", iss, []string{d.ClientId}, grant_type, refresh_token, scope, code, redirect_uri, at, w, r)
+	resp, returncode, err := bs.GenerateIdTokenResponse(d, "RS256", iss, []string{d.ClientId}, grant_type, refresh_token, code, redirect_uri, at, w, r)
 
 	if err != nil {
 		renderJSON(w, err, 200)
