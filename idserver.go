@@ -81,7 +81,7 @@ func (bs *BearerServer) GenerateIdTokenResponse(codeCheck CodeCheck, method, iss
 			return "Not authorized", http.StatusOK, nil
 		} */
 
-		groups, err := bs.Verifier.ValidateUser(sub, "secret", r)
+		groups, err := bs.Verifier.ValidateUser(sub, "secret", "", r)
 		if err != nil {
 			log.Err(err).Msg("Failed getting groups")
 		}

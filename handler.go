@@ -193,7 +193,7 @@ func (bs *BearerServer) GetRedirect(w http.ResponseWriter, r *http.Request) {
 		log.Error().Err(err).Msg("Failed saving session")
 	}
 
-	groups, err := bs.Verifier.ValidateUser(formMap["name"][0], formMap["password"][0], r)
+	groups, err := bs.Verifier.ValidateUser(formMap["name"][0], formMap["password"][0], "", r)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed validating user getting groups")
 	}
