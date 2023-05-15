@@ -97,7 +97,7 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 	code, _ := generateRandomString(22)
 
 	codeCheck := CodeCheck{
-		code:     code,
+		Code:     code,
 		User:     userID,
 		ClientId: clientId[0],
 	}
