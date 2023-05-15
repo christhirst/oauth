@@ -183,6 +183,8 @@ func (bs *BearerServer) GetRedirect(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Err(err).Msg("Form Value not present")
 	}
+
+	//TODO fixxing
 	nonce := "code"
 	if _, ok := formMap["nonce"]; ok {
 		nonce = formMap["nonce"][0]

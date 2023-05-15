@@ -50,6 +50,7 @@ func formExtractor(r *http.Request, formList []string) (formMap map[string][]str
 func UrlExtractor(r *http.Request, formList []string) (queryListMap map[string][]string, err error) {
 	queryListMap = make(map[string][]string)
 	for i, v := range r.URL.Query() {
+		fmt.Println(i, v)
 		if len(v) > 0 {
 			queryListMap[i] = v
 		}

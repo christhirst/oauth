@@ -73,6 +73,7 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 	if _, ok := urlValues["nonce"]; ok {
 		nonce = urlValues["nonce"][0]
 	}
+	fmt.Println(nonce)
 
 	var authParameter = AuthToken{
 		Iss:       "iss",
