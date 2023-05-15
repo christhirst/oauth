@@ -223,9 +223,10 @@ func (bs *BearerServer) GetRedirect(w http.ResponseWriter, r *http.Request) {
 	code, _ := generateRandomString(22)
 
 	codeCheck := CodeCheck{
-		code:     code,
+		Code:     code,
 		User:     formMap["name"][0],
 		ClientId: formMap["client_id"][0],
+		Nonce:    nonce,
 	}
 	bs.Tm.Set(code, codeCheck, 3*time.Second)
 

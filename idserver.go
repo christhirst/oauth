@@ -62,9 +62,9 @@ func (bs *BearerServer) GenerateIdTokenResponse(codeCheck CodeCheck, method, iss
 	switch grantType {
 	//--------------------------->to Function and RedirectAccess -->takes that func
 	case AuthCodeGrant:
-		nonce := "nonce"
+		nonce := codeCheck.Nonce
 		fmt.Println(nonce)
-		at = AuthToken{
+		/* 	at = AuthToken{
 			Iss:   iss,
 			Sub:   sub,
 			Aud:   aud,
@@ -74,7 +74,7 @@ func (bs *BearerServer) GenerateIdTokenResponse(codeCheck CodeCheck, method, iss
 			//auth_time: response_type,
 			//acr:       scope,
 			Azp: aud[0],
-		}
+		} */
 
 		/* if err := bs.Verifier.ValidateClient(client_id, "test_secret"); err != nil {
 			log.Error().Err(err).Msg("Unable to validate client")

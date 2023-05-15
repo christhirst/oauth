@@ -291,7 +291,8 @@ type AuthTarget struct {
 }
 
 type CodeCheck struct {
-	code     string
+	Code     string
 	User     string
+	Nonce    string
 	ClientId string
 }
