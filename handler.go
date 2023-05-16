@@ -185,7 +185,7 @@ func (bs *BearerServer) GetRedirect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//TODO fixxing
-	nonce := "code"
+	nonce := ""
 	if _, ok := formMap["nonce"]; ok {
 		nonce = formMap["nonce"][0]
 	}

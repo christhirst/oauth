@@ -18,6 +18,9 @@ func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
 	//getting the form fields
 	formList := []string{"client_id", "redirect_uri", "response_type", "scope", "state"}
 	queryListMap, err := UrlExtractor(r, formList)
+	fmt.Println(queryListMap)
+
+	getFormData([]string{}, r)
 	if err != nil {
 		log.Error().Err(err).Msg("Form value not present")
 		renderJSON(w, "Form value is missing", http.StatusForbidden)
