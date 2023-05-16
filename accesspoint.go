@@ -16,7 +16,8 @@ func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
 		log.Error().Err(err).Msgf("No session present for: %s", userID)
 	}
 	//getting the form fields
-	formList := []string{"client_id", "redirect_uri", "response_type", "scope", "state"}
+	//TODO nonce optional
+	formList := []string{"client_id", "redirect_uri", "response_type", "scope", "state", "nonce"}
 	queryListMap, err := UrlExtractor(r, formList)
 	fmt.Println(queryListMap)
 
