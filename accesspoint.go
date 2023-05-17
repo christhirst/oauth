@@ -11,6 +11,7 @@ import (
 
 func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
 	//getting the session
+	fmt.Println("SignIn")
 	userID, ok, err := bs.Verifier.SessionGet(w, r, "user_session")
 	if err != nil {
 		log.Error().Err(err).Msgf("No session present for: %s", userID)
@@ -63,7 +64,7 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 	if client, err := bs.Verifier.StoreClientGet(urlValues["client_id"][0]); err != nil {
 		log.Error().Err(err).Msgf("Failed getting Client: %s", client)
 	}
-
+	fmt.Println("RedirectAccess")
 	userID, _, err := bs.Verifier.SessionGet(w, r, "user_session")
 	if err != nil {
 		userID = r.Form.Get("name")

@@ -9,6 +9,7 @@ import (
 
 // UserCredentials manages password grant type requests
 func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("TokenEndpoint")
 	bs.Verifier.SessionGet(w, r, "code")
 	var at AuthToken
 	var code string
