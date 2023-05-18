@@ -58,6 +58,7 @@ func (bs *BearerServer) GenerateIdTokenResponse(codeCheck CodeCheck, method, iss
 	aud = append(aud, client_id)
 	fmt.Println(code)
 	fmt.Println(client_id)
+	fmt.Println("#+#+#+#+#+")
 	var resp *TokenResponse
 	switch grantType {
 	//--------------------------->to Function and RedirectAccess -->takes that func
