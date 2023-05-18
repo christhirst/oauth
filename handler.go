@@ -184,13 +184,15 @@ func (bs *BearerServer) GetRedirect(w http.ResponseWriter, r *http.Request) {
 		log.Error().Err(err).Msg("Form Value not present")
 	}
 
-	formData := &FormList{}
-	err = FillStruct(formData, formMap)
-	if err != nil {
-		log.Err(err).Msg("Failed to fill struct")
+	formData := &FormList{
+		ClientID:     formMap["client_id"][0],
+		RedirectURI:  formMap["redirect_uri"],
+		ResponseType: formMap["response_type"][0],
+		Scope:        formMap["scope"],
+		Nonce:        formMap["nonce"][0],
+		State:        formMap["state"][0],
 	}
-	fmt.Println(formData)
-	fmt.Println("######")
+
 	nonce := formData.Nonce
 
 	_, err = bs.Verifier.SessionSave(w, r, formMap["name"][0], "user_session")

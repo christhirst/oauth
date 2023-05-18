@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
-	"strings"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/rs/zerolog/log"
@@ -152,35 +150,4 @@ func UserData(userData map[string]string) (map[string]interface{}, int, string, 
 	}
 
 	return s, 200, "application/json", errors.New("")
-}
-
-func FillStruct(s interface{}, values map[string][]string) error {
-	v := reflect.ValueOf(s).Elem()
-	for key, val := range values {
-		// Convert key to uppercase
-		key = strings.ToUpper(key)
-
-		field := v.FieldByName(key)
-		if !field.IsValid() {
-			return fmt.Errorf("no such field: %s in struct", key)
-		}
-		if !field.CanSet() {
-			return fmt.Errorf("cannot set %s field value", key)
-		}
-		switch field.Kind() {
-		case reflect.String:
-			if len(val) > 0 {
-				field.SetString(val[0])
-			}
-		case reflect.Slice:
-			slice := reflect.MakeSlice(field.Type(), len(val), len(val))
-			for i := 0; i < len(val); i++ {
-				slice.Index(i).SetString(val[i])
-			}
-			field.Set(slice)
-		default:
-			return fmt.Errorf("unsupported field type: %v", field.Type())
-		}
-	}
-	return nil
 }
