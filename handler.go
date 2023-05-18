@@ -189,7 +189,8 @@ func (bs *BearerServer) GetRedirect(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Err(err).Msg("Failed to fill struct")
 	}
-
+	fmt.Println(formData)
+	fmt.Println("######")
 	nonce := formData.Nonce
 
 	_, err = bs.Verifier.SessionSave(w, r, formMap["name"][0], "user_session")
