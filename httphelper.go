@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"strings"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/rs/zerolog/log"
@@ -156,6 +157,9 @@ func UserData(userData map[string]string) (map[string]interface{}, int, string, 
 func FillStruct(s interface{}, values map[string][]string) error {
 	v := reflect.ValueOf(s).Elem()
 	for key, val := range values {
+		// Convert key to uppercase
+		key = strings.ToUpper(key)
+
 		field := v.FieldByName(key)
 		if !field.IsValid() {
 			return fmt.Errorf("no such field: %s in struct", key)

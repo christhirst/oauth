@@ -73,27 +73,48 @@ func TestFormExtractor(t *testing.T) {
 
 func TestFillStruct(t *testing.T) {
 	type TestStruct struct {
-		StringField string
-		SliceField  []string
+		StringField string   `json:"stringField"`
+		SliceField  []string `json:"sliceField"`
+	}
+
+	type FormList struct {
+		ClientID     string   `json:"clientID"`
+		ResponseType string   `json:"responseType"`
+		RedirectURI  []string `json:"redirectURI"`
+		Scope        []string `json:"scope"`
+		Nonce        string   `json:"nonce"`
+		State        string   `json:"state"`
+	}
+	/* values2 := map[string][]string{
+		"clientID":     {"12345"},
+		"responseType": {"code"},
+		"redirectURI":  {"http://localhost:8080/callback"},
+		"scope":        {"read", "write"},
+		"nonce":        {"testnonce"},
+		"state":        {"teststate"},
+	} */
+	expected2 := FormList{
+		ClientID:    "hello",
+		RedirectURI: []string{"foo", "bar", "baz"},
 	}
 
 	values := map[string][]string{
-		"StringField": {"hello"},
-		"SliceField":  {"foo", "bar", "baz"},
+		"stringField": {"hello"},
+		"sliceField":  {"foo", "bar", "baz"},
 	}
 
 	expected := TestStruct{
 		StringField: "hello",
 		SliceField:  []string{"foo", "bar", "baz"},
 	}
-
+	//var actual2 FormList
 	var actual TestStruct
 	err := FillStruct(&actual, values)
 	if err != nil {
 		t.Errorf("fillStruct returned an error: %v", err)
 	}
 
-	if !reflect.DeepEqual(actual, expected) {
+	if !reflect.DeepEqual(actual, expected2) {
 		t.Errorf("fillStruct returned unexpected result: got %v, want %v", actual, expected)
 	}
 }

@@ -61,60 +61,47 @@ type FormList struct {
 }
 
 func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
-	formList := []string{"state", "client_id", "response_type", "redirect_uri", "scope"}
+	formList := []string{"state", "client_id", "response_type", "redirect_uri", "scope", "nonce"}
 	urlValues, err := UrlExtractor(r, formList)
 	if err != nil {
 		log.Error().Err(err).Msg("Form value not present")
 		renderJSON(w, "Form value is missing", http.StatusForbidden)
 		return
 	}
-
-	//fill struct with data
-	formData := &FormList{}
-	err = FillStruct(formData, urlValues)
-	if err != nil {
-		log.Err(err).Msg("Failed to fill struct")
+	formData := FormList{
+		ClientID:     urlValues["client_id"][0],
+		ResponseType: urlValues["response_type"][0],
+		RedirectURI:  urlValues["redirect_uri"],
+		Scope:        urlValues["scope"],
+		Nonce:        urlValues["nonce"][0],
+		State:        urlValues["state"][0],
 	}
-	//optional nonce
-	nonce := r.URL.Query().Get("nonce")
 
-	//getting the client data
 	if client, err := bs.Verifier.StoreClientGet(urlValues["client_id"][0]); err != nil {
 		log.Error().Err(err).Msgf("Failed getting Client: %s", client)
 	}
-
-	//getting the session
+	fmt.Println("RedirectAccess")
 	userID, _, err := bs.Verifier.SessionGet(w, r, "user_session")
 	if err != nil {
 		userID = r.Form.Get("name")
 		log.Err(err).Msgf("Unable to get session for User: %s", userID)
 	}
 
-	//state := formData
+	fmt.Println(r.Host)
+	fmt.Println("iss")
 	clientId := urlValues["client_id"]
-	/* response_uri := urlValues["response_type"][0]
-	redirect_uri := urlValues["redirect_uri"][0] */
-	scopes := urlValues["scope"]
+	nonce := "code"
+	if _, ok := urlValues["nonce"]; ok {
+		nonce = urlValues["nonce"][0]
+	}
+	fmt.Println(nonce)
 
-	/*scope := urlValues["scope"]
-	   	var authParameter = AuthToken{
-	  		Iss:       "iss",
-	  		Sub:       userID,
-	  		Aud:       clientId,
-	  		Azp:       clientId[0],
-	  		Exp:       jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
-	  		Iat:       "",
-	  		Jti:       "",
-	  		Client_id: clientId[0],
-	  		Scope:     scope,
-	  		Nonce:     nonce,
-	  	} */
-	_, groups, err := bs.Verifier.UserLookup(userID, scopes)
+	_, groups, err := bs.Verifier.UserLookup(userID, urlValues["scope"])
 	if err != nil {
 		log.Err(err).Str("Userlookup", "failed").Msgf("Failed getting Groups from userstore, Group length: %d", len(groups))
 	}
 
-	claims := bs.Verifier.CreateClaims(userID, *formData, groups, r)
+	claims := bs.Verifier.CreateClaims(userID, formData, groups, r)
 	access_token, _ := CreateJWT("RS256", claims, bs.Kc)
 	id_token, _ := CreateJWT("RS256", claims, bs.Kc)
 
@@ -129,5 +116,5 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 	fmt.Println(code, codeCheck)
 	bs.Tm.Set(code, codeCheck, 3*time.Second)
 
-	OpenIDConnectFlows(code, id_token, access_token, *formData, w, r)
+	OpenIDConnectFlows(code, id_token, access_token, formData, w, r)
 }
