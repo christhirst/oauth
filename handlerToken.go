@@ -10,7 +10,7 @@ import (
 // UserCredentials manages password grant type requests
 func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("TokenEndpoint")
-	bs.Verifier.SessionGet(w, r, "code")
+
 	var at AuthToken
 	var code string
 	//getFormData([]string{"grant_type"}, r)
@@ -23,9 +23,6 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 		log.Error().Msg("Audience not present")
 	} */
 
-	if r.FormValue("code") != "" {
-		code = r.FormValue("code")
-	}
 	d, ok := bs.Tm.GetValue(code).(CodeCheck)
 
 	fmt.Println("eeeeeee", d, ok)
