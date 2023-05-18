@@ -204,18 +204,6 @@ func (bs *BearerServer) GetRedirect(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Err(err).Msg("Failed validating user getting groups")
 	}
-	/*
-		var authParameter = AuthToken{
-			Iss:   formMap["client_id"][0],
-			Sub:   formMap["client_id"][0],
-			Aud:   formMap["client_id"],
-			Nonce: nonce,
-			//exp:       exp,
-			//iat:       iat,
-			//auth_time: auth_time,
-			//acr:       acr,
-			//azp:       azp,
-		} */
 
 	claims := bs.Verifier.CreateClaims(formMap["name"][0], *formData, groups, r)
 	access_token, err := CreateJWT("RS256", claims, bs.Kc)
