@@ -28,11 +28,6 @@ func renderJSON(w http.ResponseWriter, v interface{}, statusCode int) error {
 	if _, err := w.Write(b); err != nil {
 		return fmt.Errorf("failed to write response body: %v", err)
 	}
-	/* _, err = w.Write(b)
-	if err != nil {
-		log.Error().Err(err).Msg("render json failed")
-	} */
-
 	buf.Reset()
 	return nil
 
