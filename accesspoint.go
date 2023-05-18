@@ -53,7 +53,7 @@ func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
-	formList := []string{"state", "client_id", "response_type", "redirect_uri", "scope"}
+	formList := []string{"state", "client_id", "response_type", "redirect_uri", "scope", "nonce"}
 	urlValues, err := UrlExtractor(r, formList)
 	if err != nil {
 		log.Error().Err(err).Msg("Form value not present")
@@ -105,6 +105,7 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 	codeCheck := CodeCheck{
 		Code:     code,
 		User:     userID,
+		Nonce:    nonce,
 		ClientId: clientId[0],
 	}
 	bs.Tm.Set(code, codeCheck, 3*time.Second)
