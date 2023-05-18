@@ -184,11 +184,13 @@ func (bs *BearerServer) GetRedirect(w http.ResponseWriter, r *http.Request) {
 		log.Error().Err(err).Msg("Form Value not present")
 	}
 
-	//TODO fixxing
-	nonce := ""
-	if _, ok := formMap["nonce"]; ok {
-		nonce = formMap["nonce"][0]
+	formData := &FormList{}
+	err = FillStruct(formData, formMap)
+	if err != nil {
+		log.Err(err).Msg("Failed to fill struct")
 	}
+
+	nonce := formData.Nonce
 
 	_, err = bs.Verifier.SessionSave(w, r, formMap["name"][0], "user_session")
 	if err != nil {
@@ -199,20 +201,20 @@ func (bs *BearerServer) GetRedirect(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Err(err).Msg("Failed validating user getting groups")
 	}
+	/*
+		var authParameter = AuthToken{
+			Iss:   formMap["client_id"][0],
+			Sub:   formMap["client_id"][0],
+			Aud:   formMap["client_id"],
+			Nonce: nonce,
+			//exp:       exp,
+			//iat:       iat,
+			//auth_time: auth_time,
+			//acr:       acr,
+			//azp:       azp,
+		} */
 
-	var authParameter = AuthToken{
-		Iss:   formMap["client_id"][0],
-		Sub:   formMap["client_id"][0],
-		Aud:   formMap["client_id"],
-		Nonce: nonce,
-		//exp:       exp,
-		//iat:       iat,
-		//auth_time: auth_time,
-		//acr:       acr,
-		//azp:       azp,
-	}
-
-	claims := bs.Verifier.CreateClaims(formMap["name"][0], formMap["client_id"], nonce, groups, authParameter, r)
+	claims := bs.Verifier.CreateClaims(*formData, groups, r)
 	access_token, err := CreateJWT("RS256", claims, bs.Kc)
 	if err != nil {
 		log.Error().Err(err).Msg("Unable to create access_token")

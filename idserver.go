@@ -136,7 +136,12 @@ func refreshToken(tokenId string, username string, tokenType TokenType) *Refresh
 }
 
 func (bs *BearerServer) generateIdTokens(method string, aud []string, tokenType TokenType, username, nonce string, groups []string, at AuthToken, r *http.Request) (string, *RefreshToken, string, error) {
-	claims := bs.Verifier.CreateClaims(username, aud, nonce, groups, at, r)
+	formData := &FormList{
+		ClientID: aud[0],
+		Nonce:    nonce,
+	}
+
+	claims := bs.Verifier.CreateClaims(*formData, groups, r)
 
 	token, _ := CreateJWT(method, claims, bs.Kc)
 	idtoken, _ := CreateJWT(method, claims, bs.Kc)

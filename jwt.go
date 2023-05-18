@@ -41,9 +41,9 @@ func CreateJWT(method string, claims jwt.Claims, kc *KeyContainer) (string, erro
 
 func JWTCreateAccessT(bs *BearerServer, groups []string, r *http.Request) (string, error) {
 	//var at AuthToken
-	aud := r.URL.Query()["client_id"]
-	nonce := r.URL.Query()["nonce"][0]
-	bs.nonce = nonce
+	/* 	aud := r.URL.Query()["client_id"]
+	   	nonce := r.URL.Query()["nonce"][0]
+	bs.nonce = nonce */
 	redirect_uri = r.URL.Query()["redirect_uri"][0]
 	/* var authParameter = AuthToken{
 		//iss:   client_id,
@@ -56,7 +56,13 @@ func JWTCreateAccessT(bs *BearerServer, groups []string, r *http.Request) (strin
 		//acr:       scope,
 		//azp:       state,
 	} */
-	claims := bs.Verifier.CreateClaims("username", aud, bs.nonce, groups, at, r)
+
+	formData := &FormList{
+		ClientID: r.URL.Query()["client_id"][0],
+		Nonce:    r.URL.Query()["nonce"][0],
+	}
+
+	claims := bs.Verifier.CreateClaims(*formData, groups, r)
 	access_token, err := CreateJWT("RS256", claims, bs.Kc)
 
 	return access_token, err

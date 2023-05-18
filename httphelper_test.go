@@ -3,6 +3,7 @@ package oauth
 import (
 	"net/http"
 	"net/url"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -65,4 +66,31 @@ func TestFormExtractor(t *testing.T) {
 		assertGeneric(t, got[0], want[0])
 	})
 
+}
+
+func TestFillStruct(t *testing.T) {
+	type TestStruct struct {
+		StringField string
+		SliceField  []string
+	}
+
+	values := map[string][]string{
+		"StringField": {"hello"},
+		"SliceField":  {"foo", "bar", "baz"},
+	}
+
+	expected := TestStruct{
+		StringField: "hello",
+		SliceField:  []string{"foo", "bar", "baz"},
+	}
+
+	var actual TestStruct
+	err := FillStruct(&actual, values)
+	if err != nil {
+		t.Errorf("fillStruct returned an error: %v", err)
+	}
+
+	if !reflect.DeepEqual(actual, expected) {
+		t.Errorf("fillStruct returned unexpected result: got %v, want %v", actual, expected)
+	}
 }

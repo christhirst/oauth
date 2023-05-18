@@ -67,14 +67,14 @@ func (*TestUserVerifier) UserLookup(username string, scope []string) (map[string
 		return map[string]string{}, nil
 	}
 */
-func (TestUserVerifier) CreateClaims(username string, aud []string, nonce string, groups []string, at AuthToken, r *http.Request) MyCustomClaimss {
+func (TestUserVerifier) CreateClaims(formData FormList, groups []string, r *http.Request) MyCustomClaimss {
 	scheme := "https://"
 	baseURL := scheme + r.Host
 
 	claims := MyCustomClaimss{
-		Nonce:  nonce,
+		Nonce:  formData.Nonce,
 		Groups: groups,
-		Azp:    aud[0],
+		Azp:    formData.ClientID,
 
 		RegisteredClaims: jwt.RegisteredClaims{
 			// A usual scenario is to set the expiration time relative to the current time
