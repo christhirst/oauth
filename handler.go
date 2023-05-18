@@ -185,7 +185,6 @@ func (bs *BearerServer) GetRedirect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	formData := &FormList{
-		ClientID:     formMap["client_id"][0],
 		RedirectURI:  formMap["redirect_uri"],
 		ResponseType: formMap["response_type"][0],
 		Scope:        formMap["scope"],
