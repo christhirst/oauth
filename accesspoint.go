@@ -75,6 +75,7 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Err(err).Msg("Failed to fill struct")
 	}
+	//optional nonce
 	nonce := r.URL.Query().Get("nonce")
 
 	//getting the client data
@@ -89,10 +90,10 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 		log.Err(err).Msgf("Unable to get session for User: %s", userID)
 	}
 
-	state := urlValues["state"][0]
+	//state := formData
 	clientId := urlValues["client_id"]
-	response_uri := urlValues["response_type"][0]
-	redirect_uri := urlValues["redirect_uri"][0]
+	/* response_uri := urlValues["response_type"][0]
+	redirect_uri := urlValues["redirect_uri"][0] */
 	scopes := urlValues["scope"]
 
 	/*scope := urlValues["scope"]
@@ -128,6 +129,5 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 	fmt.Println(code, codeCheck)
 	bs.Tm.Set(code, codeCheck, 3*time.Second)
 
-	OpenIDConnectFlows(code, id_token, access_token, response_uri, redirect_uri,
-		state, scopes, w, r)
+	OpenIDConnectFlows(code, id_token, access_token, *formData, w, r)
 }

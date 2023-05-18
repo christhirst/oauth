@@ -234,7 +234,7 @@ func (bs *BearerServer) GetRedirect(w http.ResponseWriter, r *http.Request) {
 	}
 	bs.Tm.Set(code, codeCheck, 3*time.Second)
 
-	OpenIDConnectFlows(code, id_token, access_token, formMap["response_type"][0], formMap["redirect_uri"][0], formMap["state"][0], formMap["scope"], w, r)
+	OpenIDConnectFlows(code, id_token, access_token, *formData, w, r)
 }
 
 type JWT struct {

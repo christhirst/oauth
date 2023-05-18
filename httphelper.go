@@ -95,11 +95,11 @@ func Forbidden(scope jwt.Claims) (bool, error) {
 	return false, nil
 }
 
-func OpenIDConnectFlows(code, id_token, access_token, response_type, redirect_uri, state string, scope []string, w http.ResponseWriter, r *http.Request) {
-	switch response_type {
+func OpenIDConnectFlows(code, id_token, access_token string, formData FormList, w http.ResponseWriter, r *http.Request) {
+	switch formData.ResponseType {
 	case "id_token":
 		fmt.Println(111)
-		location := redirect_uri + "?id_token=" + id_token + "&state=" + state
+		location := redirect_uri + "?id_token=" + id_token + "&state=" + formData.State
 		w.Header().Add("Location", location)
 		http.Redirect(w, r, location, 302)
 	case "code":
@@ -108,27 +108,27 @@ func OpenIDConnectFlows(code, id_token, access_token, response_type, redirect_ur
 		//if slices.Contains(scope, "openid") {
 
 		//location := redirect_uri + "?code=" + access_token + "&state=" + state
-		location := redirect_uri + "?code=" + code + "&state=" + state
+		location := redirect_uri + "?code=" + code + "&state=" + formData.State
 		w.Header().Add("Location", location)
 		http.Redirect(w, r, location, 302)
 		//}
 	case "id_token token": //insecure
-		location := redirect_uri + "&access_token=" + access_token + "&token_type=" + "token_type" + "&id_token=" + id_token + "&state=" + state
+		location := redirect_uri + "&access_token=" + access_token + "&token_type=" + "token_type" + "&id_token=" + id_token + "&state=" + formData.State
 		w.Header().Add("Location", location)
 	case "code id_token":
 		fmt.Println(333)
-		if slices.Contains(scope, "openid") {
-			location := redirect_uri + "?code=" + access_token + "&state=" + state
+		if slices.Contains(formData.Scope, "openid") {
+			location := redirect_uri + "?code=" + access_token + "&state=" + formData.State
 			w.Header().Add("Location", location)
 			http.Redirect(w, r, location, 302)
 		}
 	case "code token": //insecure
-		location := redirect_uri + "&code=" + access_token + "&access_token=" + access_token + "&token_type=" + "token_type" + "&state=" + state
+		location := redirect_uri + "&code=" + access_token + "&access_token=" + access_token + "&token_type=" + "token_type" + "&state=" + formData.State
 		w.Header().Add("Location", location)
 		//"code id_token token"
 	case "code token id_token": //insecure
 
-		location := redirect_uri + "&code=" + access_token + "&access_token=" + access_token + "&token_type=" + "token_type" + "&id_token=" + id_token + "&state=" + state
+		location := redirect_uri + "&code=" + access_token + "&access_token=" + access_token + "&token_type=" + "token_type" + "&id_token=" + id_token + "&state=" + formData.State
 		w.Header().Add("Location", location)
 		http.Redirect(w, r, location, 302)
 	default:
