@@ -3,6 +3,7 @@ package oauth
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/rs/zerolog/log"
 )
@@ -10,7 +11,10 @@ import (
 // UserCredentials manages password grant type requests
 func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("TokenEndpoint")
+	fmt.Println(r.Header.Get("Authorization"))
 
+	ss := r.Header.Get("Authorization")
+	ww := strings.Split(ss, " ")
 	var at AuthToken
 	var code string
 	//getFormData([]string{"grant_type"}, r)
@@ -23,7 +27,8 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 		log.Error().Msg("Audience not present")
 	} */
 
-	d, ok := bs.Tm.GetValue(code).(CodeCheck)
+	fmt.Println(ww)
+	d, ok := bs.Tm.GetValue(ww[1]).(CodeCheck)
 
 	fmt.Println("eeeeeee", d, ok)
 	iss := r.Host
