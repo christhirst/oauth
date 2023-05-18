@@ -83,7 +83,7 @@ func registerAPI(r *chi.Mux) {
 		nil,
 	)
 
-	r.Get("/users/sign_in", s.SignIn)
+	//r.Get("/users/sign_in", s.SignIn)
 	r.HandleFunc("/oauth/clients/{id}", s.Registration)
 	r.Get("/oauth/clients", s.Registration)
 	r.HandleFunc("/oauth/mappings/{id}", s.Registration)
@@ -91,13 +91,13 @@ func registerAPI(r *chi.Mux) {
 	r.Post("/oauth/introspect", s.TokenIntrospect)
 	r.Post("/oauth/revoke", s.TokenRevocation)
 	r.HandleFunc("/oauth/auth", s.GetRedirect)
-	r.Get("/oauth/authorize", s.SignIn)
+	//r.Get("/oauth/authorize", s.SignIn)
 	r.Get("/oauth/userinfo", s.UserInfo)
 	r.Get("/oauth/keys", s.ReturnKeys)
 	r.HandleFunc("/oauth/keys/{kid}", s.KeyEndpoint)
 	r.Get("/oauth/.well-known/openid-configuration", s.OpenidConfig)
 	//r.Get("/login", s.SignIn)
-	r.Handle("/login", s)
+	//r.Handle("/login", s)
 
 	//th := http.HandlerFunc(s.SignIn)
 	//r.Handle("/", spnego.SPNEGOKRB5Authenticate(th, kt))

@@ -9,9 +9,8 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
+/* func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
 	//getting the session
-	fmt.Println("SignIn")
 	userID, ok, err := bs.Verifier.SessionGet(w, r, "user_session")
 	if err != nil {
 		log.Error().Err(err).Msgf("No session present for: %s", userID)
@@ -20,14 +19,13 @@ func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
 	//TODO nonce optional
 	formList := []string{"client_id", "redirect_uri", "response_type", "scope", "state", "nonce"}
 	queryListMap, err := UrlExtractor(r, formList)
-	fmt.Println(queryListMap)
 
 	getFormData([]string{}, r)
 	if err != nil {
-		log.Error().Err(err).Msg("Form value not present")
 		renderJSON(w, "Form value is missing", http.StatusForbidden)
 		return
 	}
+
 	//getting the client data
 	aud := queryListMap["client_id"][0]
 	client, err := bs.Verifier.StoreClientGet(aud)
@@ -50,7 +48,7 @@ func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
 			log.Error().Err(err).Msg("Signin method failed")
 		}
 	}
-}
+} */
 
 func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 	formList := []string{"state", "client_id", "response_type", "redirect_uri", "scope", "nonce"}
