@@ -3,7 +3,6 @@ package oauth
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/rs/zerolog/log"
 )
@@ -13,10 +12,9 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("TokenEndpoint")
 	fmt.Println(r.Header.Get("Authorization"))
 
-	ss := r.Header.Get("Authorization")
-	ww := strings.Split(ss, " ")
+	//ss := r.Header.Get("Authorization")
+	//ww := strings.Split(ss, " ")
 	var at AuthToken
-	var code string
 
 	getFormData([]string{"grant_type"}, r)
 
@@ -26,6 +24,8 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 		log.Error().Err(err).Msg("Form Value not present")
 	}
 	fmt.Println(formMap)
+	code := formMap["code"][0]
+	redirect_uri := formMap["redirect_uri"]
 
 	grant_type := GrantType(r.FormValue("grant_type"))
 
@@ -34,14 +34,15 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 	if aud == "" {
 		log.Error().Msg("Audience not present")
 	} */
-
-	fmt.Println(ww)
-	d, ok := bs.Tm.GetValue(ww[1]).(CodeCheck)
+	fmt.Println("code:")
+	fmt.Println(code)
+	d, ok := bs.Tm.GetValue(code).(CodeCheck)
 
 	fmt.Println("eeeeeee", d, ok)
 	iss := r.Host
 	fmt.Println(iss)
-	resp, returncode, err := bs.GenerateIdTokenResponse(d, "RS256", iss, []string{d.ClientId}, grant_type, refresh_token, code, redirect_uri, at, w, r)
+	//TODO redirect is slice Base: Decoden equal check with memory and then pass
+	resp, returncode, err := bs.GenerateIdTokenResponse(d, "RS256", iss, []string{d.ClientId}, grant_type, refresh_token, d.ClientId, redirect_uri[0], at, w, r)
 
 	if err != nil {
 		renderJSON(w, err, 200)
