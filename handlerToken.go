@@ -17,7 +17,15 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 	ww := strings.Split(ss, " ")
 	var at AuthToken
 	var code string
-	//getFormData([]string{"grant_type"}, r)
+
+	getFormData([]string{"grant_type"}, r)
+
+	formList := []string{"authorization_code", "code", "redirect_uri"}
+	formMap, _, err := formExtractor(r, formList)
+	if err != nil {
+		log.Error().Err(err).Msg("Form Value not present")
+	}
+	fmt.Println(formMap)
 
 	grant_type := GrantType(r.FormValue("grant_type"))
 
