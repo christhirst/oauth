@@ -19,11 +19,12 @@ func formAddList(uv *url.Values, uvm map[string][]string) {
 	}
 }
 
-func QueryAddList(r *http.Request, uvm map[string][]string) {
+func qAddList(r *http.Request, uvm map[string][]string) {
 	q := r.URL.Query()
 	for i, v := range uvm {
 		for _, vv := range v {
 			q.Add(i, vv)
+
 		}
 	}
 	r.URL.RawQuery = q.Encode()
@@ -49,6 +50,7 @@ func formExtractor(r *http.Request, formList []string) (formMap map[string][]str
 func UrlExtractor(r *http.Request, formList []string) (queryListMap map[string][]string, err error) {
 	queryListMap = make(map[string][]string)
 	for i, v := range r.URL.Query() {
+		fmt.Println(i, v)
 		if len(v) > 0 {
 			queryListMap[i] = v
 		}
@@ -66,8 +68,8 @@ func UrlExtractor(r *http.Request, formList []string) (queryListMap map[string][
 		}
 		return
 	}
-}
 
+}
 func getFormData(formValues []string, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
