@@ -24,8 +24,8 @@ func (bs *BearerServer) OpenidConfig(w http.ResponseWriter, r *http.Request) {
 		Id_token_signing_alg_values_supported: []string{"RS256"},
 		Claims_supported:                      []string{"iss", "sub", "aud", "exp", "iat", "sub_legacy", "name", "nickname", "email", "email_verified", "website", "profile", "picture", "groups", "groups_direct"},
 	}
-	renderJSON(w, j, 200)
+	renderJSON(w, j, http.StatusOK)
 }
 func (bs *BearerServer) Jwk(w http.ResponseWriter, r *http.Request) {
-	renderJSON(w, nil, 200)
+	renderJSON(w, nil, http.StatusOK)
 }
