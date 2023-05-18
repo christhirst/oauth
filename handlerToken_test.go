@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/christhirst/gohelper/iasserts"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -27,16 +28,16 @@ func TestTokenEndpoint(t *testing.T) {
 	token, refreshToken, idtoken, err := bs.generateIdTokens("RS256", clientId, UserToken, "user111", "test", []string{"group1"}, at, req)
 
 	t.Run("TokenEndPoint Test 1", func(t *testing.T) {
-		assertNoError(t, err)
+		iasserts.AssertNoError(t, err)
 	})
 	t.Run("TokenEndPoint Test 2", func(t *testing.T) {
-		assertEmptyString(t, token)
+		iasserts.AssertEmptyString(t, token)
 	})
 	t.Run("TokenEndPoint Test 3", func(t *testing.T) {
-		assertEmptyString(t, idtoken)
+		iasserts.AssertEmptyString(t, idtoken)
 	})
 	t.Run("TokenEndPoint Test 4", func(t *testing.T) {
-		assertString(t, refreshToken.TokenID, clientId[0])
+		iasserts.AssertString(t, refreshToken.TokenID, clientId[0])
 	})
 
 }
@@ -104,7 +105,6 @@ func TestTokenRevocation(t *testing.T) {
 	want := 200
 
 	t.Run("TokenEndPoint Test 1", func(t *testing.T) {
-		assertResponseCode(t, want, got)
+		iasserts.AssertResponseCode(t, want, got)
 	})
-
 }

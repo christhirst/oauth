@@ -495,7 +495,7 @@ func TestGetBearerToken(t *testing.T) {
 			t.Error(err)
 		}
 		want := JWT{Alg: "RS256", Kid: "20902212-6c6c-452b-b4b3-2d00411a6733"}
-		assertGeneric(t, got, want)
+		iasserts.AssertGeneric(t, got, want)
 	})
 }
 

@@ -6,6 +6,8 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/christhirst/gohelper/iasserts"
 )
 
 func TestFormExtractor(t *testing.T) {
@@ -29,7 +31,7 @@ func TestFormExtractor(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		assertCorrectMessage(t, got, want)
+		iasserts.AssertCorrectMessage(t, got, want)
 	})
 
 	t.Run("Registration Test 2", func(t *testing.T) {
@@ -47,7 +49,7 @@ func TestFormExtractor(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		assertCorrectMessage(t, got, want)
+		iasserts.AssertCorrectMessage(t, got, want)
 	})
 
 	t.Run("Registration Test 3", func(t *testing.T) {
@@ -63,7 +65,8 @@ func TestFormExtractor(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		assertGeneric(t, got[0], want[0])
+
+		iasserts.AssertGeneric(t, got[0], want[0])
 	})
 
 }
