@@ -214,7 +214,7 @@ func (bs *BearerServer) GetRedirect(w http.ResponseWriter, r *http.Request) {
 			//azp:       azp,
 		} */
 
-	claims := bs.Verifier.CreateClaims(*formData, groups, r)
+	claims := bs.Verifier.CreateClaims(formMap["name"][0], *formData, groups, r)
 	access_token, err := CreateJWT("RS256", claims, bs.Kc)
 	if err != nil {
 		log.Error().Err(err).Msg("Unable to create access_token")

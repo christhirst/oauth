@@ -67,7 +67,7 @@ func (*TestUserVerifier) UserLookup(username string, scope []string) (map[string
 		return map[string]string{}, nil
 	}
 */
-func (TestUserVerifier) CreateClaims(formData FormList, groups []string, r *http.Request) MyCustomClaimss {
+func (TestUserVerifier) CreateClaims(username string, formData FormList, groups []string, r *http.Request) MyCustomClaimss {
 	scheme := "https://"
 	baseURL := scheme + r.Host
 

@@ -119,7 +119,7 @@ type TestUserVerifier struct {
 } */
 
 // delete request for hostname
-func (TestUserVerifier) CreateClaims(formData oauth.FormList, groups []string, r *http.Request) oauth.MyCustomClaimss {
+func (TestUserVerifier) CreateClaims(username string, formData oauth.FormList, groups []string, r *http.Request) oauth.MyCustomClaimss {
 	scheme := "https://"
 	baseURL := scheme + r.Host
 

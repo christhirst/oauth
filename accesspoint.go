@@ -114,7 +114,7 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 		log.Err(err).Str("Userlookup", "failed").Msgf("Failed getting Groups from userstore, Group length: %d", len(groups))
 	}
 
-	claims := bs.Verifier.CreateClaims(*formData, groups, r)
+	claims := bs.Verifier.CreateClaims(userID, *formData, groups, r)
 	access_token, _ := CreateJWT("RS256", claims, bs.Kc)
 	id_token, _ := CreateJWT("RS256", claims, bs.Kc)
 

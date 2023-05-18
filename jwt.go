@@ -62,7 +62,7 @@ func JWTCreateAccessT(bs *BearerServer, groups []string, r *http.Request) (strin
 		Nonce:    r.URL.Query()["nonce"][0],
 	}
 
-	claims := bs.Verifier.CreateClaims(*formData, groups, r)
+	claims := bs.Verifier.CreateClaims(r.URL.Query()["client_id"][0], *formData, groups, r)
 	access_token, err := CreateJWT("RS256", claims, bs.Kc)
 
 	return access_token, err

@@ -141,7 +141,7 @@ func (bs *BearerServer) generateIdTokens(method string, aud []string, tokenType 
 		Nonce:    nonce,
 	}
 
-	claims := bs.Verifier.CreateClaims(*formData, groups, r)
+	claims := bs.Verifier.CreateClaims(aud[0], *formData, groups, r)
 
 	token, _ := CreateJWT(method, claims, bs.Kc)
 	idtoken, _ := CreateJWT(method, claims, bs.Kc)
