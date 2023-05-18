@@ -109,7 +109,7 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 		Nonce:    nonce,
 		ClientId: clientId[0],
 	}
-	fmt.Println(codeCheck)
+	fmt.Println(code, codeCheck)
 	bs.Tm.Set(code, codeCheck, 3*time.Second)
 
 	OpenIDConnectFlows(code, id_token, access_token, urlValues["response_type"][0], urlValues["redirect_uri"][0],
