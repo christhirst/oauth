@@ -95,8 +95,6 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 		log.Err(err).Msgf("Unable to get session for User: %s", userID)
 	}
 
-	fmt.Println(r.Host)
-	fmt.Println("iss")
 	clientId := urlValues["client_id"]
 	nonce := "code"
 	if _, ok := urlValues["nonce"]; ok {
