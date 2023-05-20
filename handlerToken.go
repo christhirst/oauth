@@ -1,57 +1,53 @@
 package oauth
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/rs/zerolog/log"
 )
 
+const idTokenSigningAlg = "RS256"
+
 // UserCredentials manages password grant type requests
 func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("TokenEndpoint")
-	fmt.Println(r.Header.Get("Authorization"))
-
-	//ss := r.Header.Get("Authorization")
-	//ww := strings.Split(ss, " ")
-	var at AuthToken
-
-	getFormData([]string{"grant_type"}, r)
-
 	formList := []string{"authorization_code", "code", "redirect_uri"}
 	formMap, _, err := formExtractor(r, formList)
 	if err != nil {
 		log.Error().Err(err).Msg("Form Value not present")
 	}
-	fmt.Println(formMap)
+
 	code := formMap["code"][0]
 	redirect_uri := formMap["redirect_uri"]
 
 	grant_type := GrantType(r.FormValue("grant_type"))
 
-	//scope := r.FormValue("scope")
-	/* aud := r.FormValue("client_id")
-	if aud == "" {
-		log.Error().Msg("Audience not present")
-	} */
-	fmt.Println("code:")
-	fmt.Println(code)
 	d, ok := bs.Tm.GetValue(code).(CodeCheck)
+	if !ok {
+		http.Error(w, "Invalid authorization code", http.StatusBadRequest)
+		return
+	}
 
-	fmt.Println("eeeeeee", d, ok)
 	iss := r.Host
-	fmt.Println(iss)
 	//TODO redirect is slice Base: Decoden equal check with memory and then pass
-	resp, returncode, err := bs.GenerateIdTokenResponse(d, "RS256", iss, []string{d.ClientId}, grant_type, refresh_token, d.ClientId, redirect_uri[0], at, w, r)
+	resp, returncode, err := bs.GenerateIdTokenResponse(
+		d,
+		idTokenSigningAlg,
+		iss,
+		[]string{d.ClientId},
+		grant_type,
+		refresh_token,
+		d.ClientId,
+		redirect_uri[0],
+		at,
+		w,
+		r,
+	)
 
-	if err != nil {
-		renderJSON(w, err, 200)
+	if err != nil || returncode != 200 {
+		renderJSON(w, err, returncode)
+		return
 	}
-	if returncode != 200 {
-		renderJSON(w, err, 200)
-	}
-	renderJSON(w, resp, 200)
-
+	renderJSON(w, resp, http.StatusOK)
 }
 
 // UserCredentials manages password grant type requests
