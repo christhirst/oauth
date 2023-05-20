@@ -13,9 +13,6 @@ func handleClientNotFound(bs *BearerServer, w http.ResponseWriter, r *http.Reque
 	http.Redirect(w, r, "https://ClientNotFound", 401)
 }
 
-func handleAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
-	RedirectAccess(bs, w, r)
-}
 func handleSignInMethod(bs *BearerServer, w http.ResponseWriter, r *http.Request, aud string, userID string) error {
 	err := bs.Verifier.SignInMethod(aud, w, r)
 	if err != nil {
@@ -44,14 +41,6 @@ func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Err(err).Msgf("No session present for: %s", userID)
 	}
-
-	/* //TODO nonce optional
-	formList := []string{"client_id"}
-	queryListMap, err := UrlExtractor(r, formList)
-	if err != nil {
-		log.Error().Err(err).Msgf("No session present for: %s", userID)
-	} */
-
 	aud := r.FormValue("client_id")
 	client, err := getClient(bs, w, r, aud)
 	if err != nil || client == nil {
@@ -61,7 +50,7 @@ func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if ok && userID != "" {
-		handleAccess(bs, w, r)
+		RedirectAccess(bs, w, r)
 	} else {
 		err := handleSignInMethod(bs, w, r, aud, userID)
 		if err != nil {
