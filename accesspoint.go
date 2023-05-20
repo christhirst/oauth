@@ -8,25 +8,35 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+func handleClientNotFound(bs *BearerServer, w http.ResponseWriter, r *http.Request, aud string) {
+	log.Info().Msgf("Client not found: %s", aud)
+	http.Redirect(w, r, "https://ClientNotFound", 401)
+}
+
+func handleAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
+	RedirectAccess(bs, w, r)
+}
+func handleSignInMethod(bs *BearerServer, w http.ResponseWriter, r *http.Request, aud string, userID string) error {
+	err := bs.Verifier.SignInMethod(aud, w, r)
+	if err != nil {
+		log.Error().Err(err).Msgf("No session present for: %s", userID)
+	}
+	return err
+}
+
 func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
-	//getting the session
-	fmt.Println("SignIn")
 	userID, ok, err := bs.Verifier.SessionGet(w, r, "user_session")
 	if err != nil {
 		log.Error().Err(err).Msgf("No session present for: %s", userID)
 	}
-	//getting the form fields
+
 	//TODO nonce optional
 	formList := []string{"client_id", "redirect_uri", "response_type", "scope", "state", "nonce"}
 	queryListMap, err := UrlExtractor(r, formList)
-	fmt.Println(queryListMap)
-
-	getFormData([]string{}, r)
 	if err != nil {
-		log.Error().Err(err).Msg("Form value not present")
-		renderJSON(w, "Form value is missing", http.StatusForbidden)
-		return
+		log.Error().Err(err).Msgf("No session present for: %s", userID)
 	}
+
 	//getting the client data
 	aud := queryListMap["client_id"][0]
 	client, err := bs.Verifier.StoreClientGet(aud)
@@ -36,51 +46,14 @@ func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//redirect to error page || Logged in || to login page
-	if err != nil && client == nil {
-		log.Info().Msgf("Client not found: %s", aud)
-		http.Redirect(w, r, "https://ClientNotFound", 401)
+	if client == nil {
+		handleClientNotFound(bs, w, r, aud)
 	} else if ok && userID != "" {
-		fmt.Println(client)
-		RedirectAccess(bs, w, r)
+		handleAccess(bs, w, r)
 	} else {
-		err := bs.Verifier.SignInMethod(aud, w, r)
-
+		err := handleSignInMethod(bs, w, r, aud, userID)
 		if err != nil {
-			log.Error().Err(err).Msgf("No session present for: %s", userID)
-		}
-		//getting the form fields
-		//TODO nonce optional
-		formList := []string{"client_id", "redirect_uri", "response_type", "scope", "state", "nonce"}
-		queryListMap, err := UrlExtractor(r, formList)
-
-		getFormData([]string{}, r)
-		if err != nil {
-			renderJSON(w, "Form value is missing", http.StatusForbidden)
-			return
-		}
-
-		//getting the client data
-		aud := queryListMap["client_id"][0]
-		client, err := bs.Verifier.StoreClientGet(aud)
-		if err != nil {
-			log.Error().Err(err).Msg("Failed getting client data")
-			renderJSON(w, "Client not found", http.StatusForbidden)
-			return
-		}
-
-		//redirect to error page || Logged in || to login page
-		if err != nil && client == nil {
-			log.Info().Msgf("Client not found: %s", aud)
-			http.Redirect(w, r, "https://ClientNotFound", 401)
-		} else if ok && userID != "" {
-			fmt.Println(client)
-			RedirectAccess(bs, w, r)
-		} else {
-			err := bs.Verifier.SignInMethod(aud, w, r)
-			if err != nil {
-				log.Error().Err(err).Msg("Signin method failed")
-			}
+			log.Error().Err(err).Msg("Signin method failed")
 		}
 	}
 }
