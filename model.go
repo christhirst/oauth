@@ -37,14 +37,14 @@ type OpenidConfig struct {
 	Scopes_supported                              []string `json:"scopes_supported"`
 	Token_endpoint_auth_methods_supported         []string `json:"token_endpoint_auth_methods_supported"`
 	Claims_supported                              []string `json:"claims_supported"`
-	Code_challenge_methods_supported              []string `json:"code_challenge_methods_supported"`
-	Introspection_endpoint                        string   `json:"introspection_endpoint"`
-	Introspection_endpoint_auth_methods_supported []string `json:"introspection_endpoint_auth_methods_supported"`
-	Revocation_endpoint                           string   `json:"revocation_endpoint"`
-	Revocation_endpoint_auth_methods_supported    []string `json:"revocation_endpoint_auth_methods_supported"`
-	End_session_endpoint                          string   `json:"end_session_endpoint"`
-	Request_parameter_supported                   bool     `json:"request_parameter_supported"`
-	Request_object_signing_alg_values_supported   []string `json:"request_object_signing_alg_values_supported"`
+	Code_challenge_methods_supported              []string `json:"code_challenge_methods_supported,omitempty"`
+	Introspection_endpoint                        string   `json:"introspection_endpoint,omitempty"`
+	Introspection_endpoint_auth_methods_supported []string `json:"introspection_endpoint_auth_methods_supported,omitempty"`
+	Revocation_endpoint                           string   `json:"revocation_endpoint,omitempty"`
+	Revocation_endpoint_auth_methods_supported    []string `json:"revocation_endpoint_auth_methods_supported,omitempty"`
+	End_session_endpoint                          string   `json:"end_session_endpoint,omitempty"`
+	Request_parameter_supported                   bool     `json:"request_parameter_supported,omitempty"`
+	Request_object_signing_alg_values_supported   []string `json:"request_object_signing_alg_values_supported,omitempty"`
 }
 
 type TokenRequest struct {
