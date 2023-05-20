@@ -10,7 +10,7 @@ import (
 
 func handleClientNotFound(bs *BearerServer, w http.ResponseWriter, r *http.Request, aud string) {
 	log.Info().Msgf("Client not found: %s", aud)
-	http.Redirect(w, r, "https://ClientNotFound", 401)
+	http.Redirect(w, r, "https://ClientNotFound", http.StatusUnauthorized)
 }
 
 func handleSignInMethod(bs *BearerServer, w http.ResponseWriter, r *http.Request, aud string, userID string) error {
