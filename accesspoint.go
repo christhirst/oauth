@@ -24,31 +24,43 @@ func handleSignInMethod(bs *BearerServer, w http.ResponseWriter, r *http.Request
 	return err
 }
 
+func getClient(bs *BearerServer, w http.ResponseWriter, r *http.Request, aud string) (*Registration, error) {
+	client, err := bs.Verifier.StoreClientGet(aud)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed getting client data")
+		return nil, err
+	}
+
+	if client == nil {
+		handleClientNotFound(bs, w, r, aud)
+		return nil, nil
+	}
+
+	return client, nil
+}
+
 func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
 	userID, ok, err := bs.Verifier.SessionGet(w, r, "user_session")
 	if err != nil {
 		log.Error().Err(err).Msgf("No session present for: %s", userID)
 	}
 
-	//TODO nonce optional
-	formList := []string{"client_id", "redirect_uri", "response_type", "scope", "state", "nonce"}
+	/* //TODO nonce optional
+	formList := []string{"client_id"}
 	queryListMap, err := UrlExtractor(r, formList)
 	if err != nil {
 		log.Error().Err(err).Msgf("No session present for: %s", userID)
-	}
+	} */
 
-	//getting the client data
-	aud := queryListMap["client_id"][0]
-	client, err := bs.Verifier.StoreClientGet(aud)
-	if err != nil {
+	aud := r.FormValue("client_id")
+	client, err := getClient(bs, w, r, aud)
+	if err != nil || client == nil {
 		log.Error().Err(err).Msg("Failed getting client data")
-		renderJSON(w, "Client not found", http.StatusForbidden)
+		renderJSON(w, fmt.Sprintf("Failed getting client data: %v", err), http.StatusForbidden)
 		return
 	}
 
-	if client == nil {
-		handleClientNotFound(bs, w, r, aud)
-	} else if ok && userID != "" {
+	if ok && userID != "" {
 		handleAccess(bs, w, r)
 	} else {
 		err := handleSignInMethod(bs, w, r, aud, userID)
