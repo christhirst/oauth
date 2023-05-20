@@ -1,6 +1,7 @@
 package oauth
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -8,13 +9,13 @@ func (bs *BearerServer) OpenidConfig(w http.ResponseWriter, r *http.Request) {
 	baseURL := scheme + r.Host
 	j := OpenidConfig{
 		Issuer:                                baseURL,
-		Authorization_endpoint:                baseURL + "/oauth/authorize",
-		Token_endpoint:                        baseURL + "/oauth/token",
-		Introspection_endpoint:                baseURL + "/oauth/introspect",
-		Userinfo_endpoint:                     baseURL + "/oauth/userinfo",
-		Registration_endpoint:                 baseURL + "/oauth/clients",
-		Jwks_uri:                              baseURL + "/oauth/keys",
-		Revocation_endpoint:                   baseURL + "/oauth/revoke",
+		Authorization_endpoint:                fmt.Sprintf("%s/oauth/authorize", baseURL),
+		Token_endpoint:                        fmt.Sprintf("%s/oauth/token", baseURL),
+		Introspection_endpoint:                fmt.Sprintf("%s/oauth/introspect", baseURL),
+		Userinfo_endpoint:                     fmt.Sprintf("%s/oauth/userinfo", baseURL),
+		Registration_endpoint:                 fmt.Sprintf("%s/oauth/clients", baseURL),
+		Jwks_uri:                              fmt.Sprintf("%s/oauth/keys", baseURL),
+		Revocation_endpoint:                   fmt.Sprintf("%s/oauth/revoke", baseURL),
 		Scopes_supported:                      []string{"api", "read_api", "read_user", "read_repository", "write_repository", "read_registry", "write_registry", "sudo", "openid", "profile", "email"},
 		Response_types_supported:              []string{"code"},
 		Response_modes_supported:              []string{"query", "fragment"},
@@ -26,6 +27,8 @@ func (bs *BearerServer) OpenidConfig(w http.ResponseWriter, r *http.Request) {
 	}
 	renderJSON(w, j, http.StatusOK)
 }
-func (bs *BearerServer) Jwk(w http.ResponseWriter, r *http.Request) {
+
+/* func (bs *BearerServer) Jwk(w http.ResponseWriter, r *http.Request) {
 	renderJSON(w, nil, http.StatusOK)
 }
+*/

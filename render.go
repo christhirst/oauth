@@ -12,7 +12,7 @@ import (
 func renderJSON(w http.ResponseWriter, v interface{}, statusCode int) error {
 	enc := json.NewEncoder(w)
 	enc.SetEscapeHTML(true)
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	if err := enc.Encode(v); err != nil {
 		return fmt.Errorf("failed to encode object to json: %v", err)
