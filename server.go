@@ -44,7 +44,7 @@ type CredentialsVerifier interface {
 	CreateClaims(username string, formData FormList, groups []string, r *http.Request) MyCustomClaimss
 	//CreateAtClaims(username, client_id string, aud []string, nonce string, scope, groups []string, at AuthToken, r *http.Request) MyCustomClaimss
 
-	GetConnectionTarget(r *http.Request) (string, *AuthTarget, error)
+	GetConnectionTarget(r *http.Request) (string, ConnDataLdap, error)
 
 	UserLookup(username string, scope []string) (map[string]string, []string, error)
 	SessionGet(w http.ResponseWriter, r *http.Request, cookieID string) (string, bool, error)

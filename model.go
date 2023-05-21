@@ -22,6 +22,26 @@ type postData struct {
 	Key   string
 	Value string
 }
+
+type ConnDataLdap struct {
+	LdapName     string
+	Owner        []string
+	Hostname     string
+	Port         int
+	Bindusername string
+	Bindpassword string
+	Starttls     bool
+	Filter       string
+	Basedn       string
+	Uid          string
+	SyncMode     string
+	Mapping      bool
+	Frequence    int64
+	SCIM         bool
+	SPN          string
+	IPRange      string
+}
+
 type OpenidConfig struct {
 	Issuer                                        string   `json:"issuer"`
 	Authorization_endpoint                        string   `json:"authorization_endpoint"`

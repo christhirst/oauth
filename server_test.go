@@ -180,8 +180,8 @@ func (TestUserVerifier) StoreTokenID(tokenType TokenType, credential, tokenID, r
 	return nil
 }
 
-func (*TestUserVerifier) GetConnectionTarget(r *http.Request) (string, *AuthTarget, error) {
-	return "false", &AuthTarget{}, nil
+func (*TestUserVerifier) GetConnectionTarget(r *http.Request) (string, ConnDataLdap, error) {
+	return "false", ConnDataLdap{}, nil
 }
 
 func (*TestUserVerifier) SessionGet(w http.ResponseWriter, r *http.Request, cookieID string) (string, bool, error) {

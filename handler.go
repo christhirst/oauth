@@ -192,16 +192,16 @@ func (bs *BearerServer) GetRedirect(w http.ResponseWriter, r *http.Request) {
 		State:        formMap["state"][0],
 	}
 
-	nonce := formData.Nonce
-
-	_, err = bs.Verifier.SessionSave(w, r, formMap["name"][0], "user_session")
-	if err != nil {
-		log.Error().Err(err).Msg("Failed saving session")
-	}
+	//nonce := formData.Nonce
 
 	groups, err := bs.Verifier.ValidateUser(formMap["name"][0], formMap["password"][0], "", r)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed validating user getting groups")
+	}
+
+	_, err = bs.Verifier.SessionSave(w, r, formMap["name"][0], "user_session")
+	if err != nil {
+		log.Error().Err(err).Msg("Failed saving session")
 	}
 
 	claims := bs.Verifier.CreateClaims(formMap["name"][0], *formData, groups, r)
@@ -220,7 +220,7 @@ func (bs *BearerServer) GetRedirect(w http.ResponseWriter, r *http.Request) {
 		Code:     code,
 		User:     formMap["name"][0],
 		ClientId: formMap["client_id"][0],
-		Nonce:    nonce,
+		Nonce:    formData.Nonce,
 	}
 	bs.Tm.Set(code, codeCheck, 3*time.Second)
 
@@ -316,6 +316,6 @@ func (bs *BearerServer) UserInfo(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("ssws")
 	renderJSON(w, nil, http.StatusForbidden)
 }
-func (bs *BearerServer) GetConnectionTarget(r *http.Request) (string, *AuthTarget, error) {
-	return "false", &AuthTarget{}, nil
+func (bs *BearerServer) GetConnectionTarget(r *http.Request) (string, ConnDataLdap, error) {
+	return "false", ConnDataLdap{}, nil
 }
