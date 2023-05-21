@@ -316,6 +316,3 @@ func (bs *BearerServer) UserInfo(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("ssws")
 	renderJSON(w, nil, http.StatusForbidden)
 }
-func (bs *BearerServer) GetConnectionTarget(r *http.Request) (string, error) {
-	return "false", nil
-}
