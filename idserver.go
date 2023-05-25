@@ -56,14 +56,15 @@ func (bs *BearerServer) GenerateIdTokenResponse(codeCheck CodeCheck, method, iss
 	sub := codeCheck.User
 	client_id := codeCheck.ClientId
 	aud = append(aud, client_id)
-	fmt.Println(sub)
-	fmt.Println(code)
-	fmt.Println(client_id)
-	fmt.Println("#+#+#+#+#+")
+
 	var resp *TokenResponse
 	switch grantType {
 	//--------------------------->to Function and RedirectAccess -->takes that func
 	case AuthCodeGrant:
+		fmt.Println(sub)
+		fmt.Println(code)
+		fmt.Println(client_id)
+		fmt.Println("#+#+#+#+#+")
 		nonce := codeCheck.Nonce
 		fmt.Println(nonce)
 		/* 	at = AuthToken{
@@ -142,7 +143,7 @@ func (bs *BearerServer) generateIdTokens(method string, aud []string, tokenType 
 		Nonce:    nonce,
 	}
 
-	claims := bs.Verifier.CreateClaims(aud[0], *formData, groups, r)
+	claims := bs.Verifier.CreateClaims(username, *formData, groups, r)
 
 	token, _ := CreateJWT(method, claims, bs.Kc)
 	idtoken, _ := CreateJWT(method, claims, bs.Kc)
