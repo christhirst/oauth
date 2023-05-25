@@ -1,6 +1,7 @@
 package oauth
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/rs/zerolog/log"
@@ -21,22 +22,23 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 
 	grant_type := GrantType(r.FormValue("grant_type"))
 
-	d, ok := bs.Tm.GetValue(code).(CodeCheck)
+	codeCheck, ok := bs.Tm.GetValue(code).(CodeCheck)
 	if !ok {
 		http.Error(w, "Invalid authorization code", http.StatusBadRequest)
 		return
 	}
+	fmt.Println(codeCheck)
 
 	iss := r.Host
 	//TODO redirect is slice Base: Decoden equal check with memory and then pass
 	resp, returncode, err := bs.GenerateIdTokenResponse(
-		d,
+		codeCheck,
 		idTokenSigningAlg,
 		iss,
-		[]string{d.ClientId},
+		[]string{codeCheck.ClientId},
 		grant_type,
 		refresh_token,
-		d.ClientId,
+		codeCheck.ClientId,
 		redirect_uri[0],
 		at,
 		w,
