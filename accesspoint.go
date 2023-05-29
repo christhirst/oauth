@@ -76,13 +76,19 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 		renderJSON(w, "Form value is missing", http.StatusForbidden)
 		return
 	}
+
 	formData := FormList{
 		ClientID:     urlValues["client_id"][0],
 		ResponseType: urlValues["response_type"][0],
 		RedirectURI:  urlValues["redirect_uri"],
 		Scope:        urlValues["scope"],
-		Nonce:        urlValues["nonce"][0],
 		State:        urlValues["state"][0],
+	}
+
+	nonce := ""
+	if _, ok := urlValues["nonce"]; ok {
+		formData.Nonce = urlValues["nonce"][0]
+		nonce = urlValues["nonce"][0]
 	}
 
 	if client, err := bs.Verifier.StoreClientGet(urlValues["client_id"][0]); err != nil {
@@ -96,10 +102,7 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 	}
 
 	clientId := urlValues["client_id"]
-	nonce := "code"
-	if _, ok := urlValues["nonce"]; ok {
-		nonce = urlValues["nonce"][0]
-	}
+
 	fmt.Println(nonce)
 
 	_, groups, err := bs.Verifier.UserLookup(userID, urlValues["scope"])
