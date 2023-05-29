@@ -82,13 +82,16 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 		ResponseType: urlValues["response_type"][0],
 		RedirectURI:  urlValues["redirect_uri"],
 		Scope:        urlValues["scope"],
-		State:        urlValues["state"][0],
 	}
 
 	nonce := ""
 	if _, ok := urlValues["nonce"]; ok {
 		formData.Nonce = urlValues["nonce"][0]
 		nonce = urlValues["nonce"][0]
+	}
+
+	if _, ok := urlValues["nonce"]; ok {
+		formData.State = urlValues["state"][0]
 	}
 
 	if client, err := bs.Verifier.StoreClientGet(urlValues["client_id"][0]); err != nil {

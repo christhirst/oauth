@@ -8,7 +8,7 @@ import (
 func (bs *BearerServer) OpenidConfig(w http.ResponseWriter, r *http.Request) {
 	baseURL := scheme + r.Host
 	j := OpenidConfig{
-		Issuer:                                baseURL,
+		Issuer:                                fmt.Sprintf("%s/oauth", baseURL),
 		Authorization_endpoint:                fmt.Sprintf("%s/oauth/authorize", baseURL),
 		Token_endpoint:                        fmt.Sprintf("%s/oauth/token", baseURL),
 		Introspection_endpoint:                fmt.Sprintf("%s/oauth/introspect", baseURL),
