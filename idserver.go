@@ -138,9 +138,16 @@ func refreshToken(tokenId string, username string, tokenType TokenType) *Refresh
 }
 
 func (bs *BearerServer) generateIdTokens(method string, aud []string, tokenType TokenType, username, nonce string, groups []string, at AuthToken, r *http.Request) (string, *RefreshToken, string, error) {
-	formData := &FormList{
-		ClientID: aud[0],
-		Nonce:    nonce,
+	var formData *FormList
+	if nonce != "" {
+		formData = &FormList{
+			ClientID: aud[0],
+			Nonce:    nonce,
+		}
+	} else {
+		formData = &FormList{
+			ClientID: aud[0],
+		}
 	}
 
 	claims := bs.Verifier.CreateClaims(username, *formData, groups, r)
