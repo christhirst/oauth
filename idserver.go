@@ -155,6 +155,9 @@ func (bs *BearerServer) generateIdTokens(method string, aud []string, tokenType 
 	token, _ := CreateJWT(method, claims, bs.Kc)
 	idtoken, _ := CreateJWT(method, claims, bs.Kc)
 	refreshToken := refreshToken(aud[0], username, tokenType)
+	fmt.Println(token)
+	fmt.Println(idtoken)
+	fmt.Println(refreshToken)
 
 	return token, refreshToken, idtoken, nil
 }
