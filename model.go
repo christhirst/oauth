@@ -84,7 +84,7 @@ type TokenResponse struct {
 
 type MyCustomClaims struct {
 	Foo    string   `json:"foo"`
-	Nonce  string   `json:"nonce"`
+	Nonce  string   `json:"nonce,omitempty"`
 	Groups []string `json:"groups"`
 	jwt.RegisteredClaims
 }
@@ -94,7 +94,7 @@ type MyCustomClaims struct {
 type MyCustomClaimss struct {
 	Iss       string   `json:"iss"`
 	Sub       string   `json:"sub"`
-	Nonce     string   `json:"nonce"`
+	Nonce     string   `json:"nonce,omitempty"`
 	Aud       []string `json:"aud"`
 	Azp       string   `json:"azp"`
 	Client_id string   `json:"client_id"`
@@ -124,7 +124,7 @@ type UserInfo struct {
 	Phone_number_verified string   `json:"phone_number_verified"`
 	Address               []string `json:"address"`
 	Updated_at            string   `json:"updated_at"`
-	Nonce                 string   `json:"nonce"`
+	Nonce                 string   `json:"nonce,omitempty"`
 	Groups                []string `json:"groups"`
 }
 
@@ -174,7 +174,7 @@ type AuthToken struct {
 	Iss       string           `json:"iss"`
 	Sub       string           `json:"sub"`
 	Aud       []string         `json:"aud"`
-	Nonce     string           `json:"nonce"`
+	Nonce     string           `json:"nonce,omitempty"`
 	Exp       *jwt.NumericDate `json:"exp"`
 	Iat       string           `json:"iat"`
 	Jti       string           `json:"jti"`
