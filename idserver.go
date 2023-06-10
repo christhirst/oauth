@@ -31,28 +31,6 @@ type Cookie struct {
 
 // Generate token response
 func (bs *BearerServer) GenerateIdTokenResponse(codeCheck CodeCheck, method, iss string, aud []string, grantType GrantType, refreshToken string, code string, redirectURI string, at AuthToken, w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
-	/* var credential string
-	parsedJwt, err := ParseJWT(code, &bs.Kc.Pk["test"].PublicKey)
-	if err != nil {
-		log.Err(err)
-	} */
-	//var sub string
-	//var client_id string
-
-	//if err == nil {
-	/* token := strings.Split(code, ".")[1]
-	dIdToken, _ := base64.RawStdEncoding.DecodeString(token)
-	jwtParsed := MyCustomClaimss{}
-	err = json.Unmarshal(dIdToken, &jwtParsed)
-	if err != nil {
-		fmt.Println("error:", err)
-	} */
-	//aud = jwtParsed.Aud
-	//sub = jwtParsed.Sub
-	//client_id = jwtParsed.Client_id
-	//credential = jwtParsed.Sub
-	//}
-
 	sub := codeCheck.User
 	client_id := codeCheck.ClientId
 	aud = append(aud, client_id)
@@ -61,29 +39,7 @@ func (bs *BearerServer) GenerateIdTokenResponse(codeCheck CodeCheck, method, iss
 	switch grantType {
 	//--------------------------->to Function and RedirectAccess -->takes that func
 	case AuthCodeGrant:
-		fmt.Println(sub)
-		fmt.Println(code)
-		fmt.Println(client_id)
-		fmt.Println("#+#+#+#+#+")
 		nonce := codeCheck.Nonce
-		fmt.Println(nonce)
-		/* 	at = AuthToken{
-			Iss:   iss,
-			Sub:   sub,
-			Aud:   aud,
-			Nonce: nonce,
-			//exp:       scope,
-			//Iat: "state",
-			//auth_time: response_type,
-			//acr:       scope,
-			Azp: aud[0],
-		} */
-
-		/* if err := bs.Verifier.ValidateClient(client_id, "test_secret"); err != nil {
-			log.Error().Err(err).Msg("Unable to validate client")
-			return "Not authorized", http.StatusOK, nil
-		} */
-
 		groups, err := bs.Verifier.ValidateUser(sub, "secret", "", r)
 		if err != nil {
 			log.Err(err).Msg("Failed getting groups")
@@ -94,11 +50,6 @@ func (bs *BearerServer) GenerateIdTokenResponse(codeCheck CodeCheck, method, iss
 			return "Token generation failed, check claims", http.StatusInternalServerError, err
 		}
 
-		/* err = bs.Verifier.StoreTokenID(token.TokenType, user, token.ID, refresh.RefreshTokenID)
-		if err != nil {
-			return "Storing Token ID failed", http.StatusInternalServerError, err
-		} */
-
 		if resp, err = bs.cryptIdTokens(token, refresh, idtoken, r); err != nil {
 			return "Token generation failed, check security provider", http.StatusInternalServerError, err
 		}
@@ -107,10 +58,6 @@ func (bs *BearerServer) GenerateIdTokenResponse(codeCheck CodeCheck, method, iss
 		if err != nil {
 			return "Not authorized", http.StatusUnauthorized, err
 		}
-
-		/* if _, err = bs.Verifier.ValidateTokenID(refresh.TokenType, refresh.Credential, refresh.TokenID, refresh.RefreshTokenID); err != nil {
-			return "Not authorized invalid token", http.StatusUnauthorized, err
-		} */
 
 		token, refresh, err := bs.generateTokens(refresh.TokenType, refresh.Credential, refresh.Scope, r)
 		if err != nil {
