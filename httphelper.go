@@ -138,18 +138,3 @@ func OpenIDConnectFlows(code, id_token, access_token string, formData FormList, 
 	//todo: OAuth client credentials flow; OAuth device flow
 
 }
-
-func UserData(userData map[string]string) (map[string]interface{}, int, string, error) {
-	/* w.WriteHeader(401) // Unauthorized
-	w.WriteHeader(403) // Forbidden
-	w.WriteHeader(500) // Internal Server Error */
-
-	we := map[string]string{"sub": "dd", "la": "ss"}
-
-	s := make(map[string]interface{}, len(we))
-	for i, v := range we {
-		s[i] = v
-	}
-
-	return s, 200, "application/json", errors.New("")
-}

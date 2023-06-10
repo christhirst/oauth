@@ -293,26 +293,14 @@ func (bs *BearerServer) UserInfo(w http.ResponseWriter, r *http.Request) {
 		// 9:45PM ERR JWT validation failed for kid: 051c42ab-a832-4f94-81a4-45feefa73fec error="Token invalid"
 		username := jwtParsed["sub"].(string)
 
-		allUserInfos, err := bs.Verifier.GetUserData(username, "scope", r)
-		/* groups, err := bs.Verifier.ValidateUser(username, "password", "scope", r)
+		jsonPayload, err := bs.Verifier.GetUserData(username, "scope", r)
 		if err != nil {
-			log.Error().Err(err).Msg("Parsing Form failed")
-		} */
-		/* groups, err = bs.Verifier.ExtractJWTtoUserGroup("")
-		//.Allcon.AllConns[authTarget].Conns[ldapCon].LdapGetMemberOf(baseDN, sizeLimit, filterLDAP)
-		if err != nil {
-			log.Error().Err(err).Msgf("Failed getting groups for: %s", username)
-			fmt.Println("eee")
-		} */
-		//fmt.Println(groups)
-		jsonPayload, rc, contentType, err := UserData(allUserInfos)
-		if err != nil {
-			log.Error().Err(err).Msg("Unable to create id_token")
+			log.Error().Err(err).Msg("Unable to get userdata for userinfo")
 		}
-		w.Header().Set("Content-Type", contentType)
-		renderJSON(w, jsonPayload, rc)
+
+		w.Header().Set("Content-Type", "contentType")
+		renderJSON(w, jsonPayload, 200)
 		return
 	}
-	fmt.Println("ssws")
 	renderJSON(w, nil, http.StatusForbidden)
 }
