@@ -301,10 +301,11 @@ func (bs *BearerServer) UserInfo(w http.ResponseWriter, r *http.Request) {
 
 			w.Header().Set("Content-Type", "contentType")
 			renderJSON(w, jsonPayload, 200)
-
+			return
 		}
 		renderJSON(w, map[string]interface{}{}, http.StatusUnauthorized)
 		return
 	}
 	renderJSON(w, nil, http.StatusForbidden)
+	return
 }
