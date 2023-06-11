@@ -79,16 +79,11 @@ func JWTvalid(jwtToken string, kc *rsa.PublicKey) (*jwt.Token, error) {
 func ParseJWT(jwtToken string, kc *rsa.PublicKey) (jwt.MapClaims, error) {
 	parsedToken, err := JWTvalid(jwtToken, kc)
 	if parsedToken == nil || (err != nil && !parsedToken.Valid) {
-		//TODO fixx delte claims or with config true
 		return nil, errors.New("Token invalid")
 	}
 
 	claims := parsedToken.Claims.(jwt.MapClaims)
-	//if val, ok := claims["sub"]; ok {
-	//sub := val.(string)
 	return claims, err
-	//}
-	//return jwt.MapClaims{}, err
 }
 
 func ExtractJWTtoUserGroup(jwtToken string, kc *rsa.PublicKey) ([]string, error) {
