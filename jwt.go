@@ -80,8 +80,7 @@ func ParseJWT(jwtToken string, kc *rsa.PublicKey) (jwt.MapClaims, error) {
 	parsedToken, err := JWTvalid(jwtToken, kc)
 	if parsedToken == nil || (err != nil && !parsedToken.Valid) {
 		//TODO fixx delte claims or with config true
-		claims := parsedToken.Claims.(jwt.MapClaims)
-		return claims, errors.New("Token invalid")
+		return nil, errors.New("Token invalid")
 	}
 
 	claims := parsedToken.Claims.(jwt.MapClaims)
