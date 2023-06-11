@@ -300,7 +300,10 @@ func (bs *BearerServer) UserInfo(w http.ResponseWriter, r *http.Request) {
 			}
 
 			w.Header().Set("Content-Type", "contentType")
-			renderJSON(w, jsonPayload, 200)
+			err = renderJSON(w, jsonPayload, 200)
+			if err != nil {
+				log.Error().Err(err).Msg("Unable to get userdata for userinfo")
+			}
 			return
 		}
 		renderJSON(w, map[string]interface{}{}, http.StatusUnauthorized)
