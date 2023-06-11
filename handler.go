@@ -288,18 +288,22 @@ func (bs *BearerServer) UserInfo(w http.ResponseWriter, r *http.Request) {
 		jwtParsed, err := ParseJWT(jwtToken, pk)
 		if err != nil {
 			log.Error().Err(err).Msgf("JWT validation failed for kid: %s", jwtHeader.Kid)
-		}
-		// BUG  panic: interface conversion: interface {} is nil, not string
-		// 9:45PM ERR JWT validation failed for kid: 051c42ab-a832-4f94-81a4-45feefa73fec error="Token invalid"
-		username := jwtParsed["sub"].(string)
+		} else {
 
-		jsonPayload, err := bs.Verifier.GetUserData(username, "scope", r)
-		if err != nil {
-			log.Error().Err(err).Msg("Unable to get userdata for userinfo")
-		}
+			// BUG  panic: interface conversion: interface {} is nil, not string
+			// 9:45PM ERR JWT validation failed for kid: 051c42ab-a832-4f94-81a4-45feefa73fec error="Token invalid"
+			username := jwtParsed["sub"].(string)
 
-		w.Header().Set("Content-Type", "contentType")
-		renderJSON(w, jsonPayload, 200)
+			jsonPayload, err := bs.Verifier.GetUserData(username, "scope", r)
+			if err != nil {
+				log.Error().Err(err).Msg("Unable to get userdata for userinfo")
+			}
+
+			w.Header().Set("Content-Type", "contentType")
+			renderJSON(w, jsonPayload, 200)
+
+		}
+		renderJSON(w, map[string]interface{}{}, http.StatusUnauthorized)
 		return
 	}
 	renderJSON(w, nil, http.StatusForbidden)
