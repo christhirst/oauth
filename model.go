@@ -316,3 +316,11 @@ type CodeCheck struct {
 	Nonce    string
 	ClientId string
 }
+type FormList struct {
+	ClientID     string
+	ResponseType string
+	RedirectURI  []string
+	Scope        []string
+	Nonce        string
+	State        string
+}

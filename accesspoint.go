@@ -8,34 +8,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func handleClientNotFound(bs *BearerServer, w http.ResponseWriter, r *http.Request, aud string) {
-	log.Info().Msgf("Client not found: %s", aud)
-	http.Redirect(w, r, "https://ClientNotFound", http.StatusUnauthorized)
-}
-
-func handleSignInMethod(bs *BearerServer, w http.ResponseWriter, r *http.Request, aud string, userID string) error {
-	err := bs.Verifier.SignInMethod(aud, w, r)
-	if err != nil {
-		log.Error().Err(err).Msgf("No session present for: %s", userID)
-	}
-	return err
-}
-
-func getClient(bs *BearerServer, w http.ResponseWriter, r *http.Request, aud string) (*Registration, error) {
-	client, err := bs.Verifier.StoreClientGet(aud)
-	if err != nil {
-		log.Error().Err(err).Msg("Failed getting client data")
-		return nil, err
-	}
-
-	if client == nil {
-		handleClientNotFound(bs, w, r, aud)
-		return nil, nil
-	}
-
-	return client, nil
-}
-
 func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
 	userID, ok, err := bs.Verifier.SessionGet(w, r, "user_session")
 	if err != nil {
@@ -57,15 +29,6 @@ func (bs *BearerServer) SignIn(w http.ResponseWriter, r *http.Request) {
 			log.Error().Err(err).Msg("Signin method failed")
 		}
 	}
-}
-
-type FormList struct {
-	ClientID     string
-	ResponseType string
-	RedirectURI  []string
-	Scope        []string
-	Nonce        string
-	State        string
 }
 
 func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
@@ -106,8 +69,6 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 
 	clientId := urlValues["client_id"]
 
-	fmt.Println(nonce)
-
 	_, groups, err := bs.Verifier.UserLookup(userID, urlValues["scope"])
 	if err != nil {
 		log.Err(err).Str("Userlookup", "failed").Msgf("Failed getting Groups from userstore, Group length: %d", len(groups))
@@ -129,4 +90,32 @@ func RedirectAccess(bs *BearerServer, w http.ResponseWriter, r *http.Request) {
 	bs.Tm.Set(code, codeCheck, 3*time.Second)
 
 	OpenIDConnectFlows(code, id_token, access_token, formData, w, r)
+}
+
+func handleClientNotFound(bs *BearerServer, w http.ResponseWriter, r *http.Request, aud string) {
+	log.Info().Msgf("Client not found: %s", aud)
+	http.Redirect(w, r, "https://ClientNotFound", http.StatusUnauthorized)
+}
+
+func handleSignInMethod(bs *BearerServer, w http.ResponseWriter, r *http.Request, aud string, userID string) error {
+	err := bs.Verifier.SignInMethod(aud, w, r)
+	if err != nil {
+		log.Error().Err(err).Msgf("No session present for: %s", userID)
+	}
+	return err
+}
+
+func getClient(bs *BearerServer, w http.ResponseWriter, r *http.Request, aud string) (*Registration, error) {
+	client, err := bs.Verifier.StoreClientGet(aud)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed getting client data")
+		return nil, err
+	}
+
+	if client == nil {
+		handleClientNotFound(bs, w, r, aud)
+		return nil, nil
+	}
+
+	return client, nil
 }

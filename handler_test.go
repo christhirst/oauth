@@ -527,6 +527,7 @@ func TestUserInfo(t *testing.T) {
 		panic(err)
 	}
 	fmt.Println(tsa)
+	fmt.Println("eree")
 	//t.Error()
 
 }
