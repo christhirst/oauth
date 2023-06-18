@@ -41,6 +41,8 @@ func ConvertIOReader[k any](buff io.Reader, target k) {
 		panic(err)
 	}
 }
+
+// TODO ParseBody double
 func ParseBody[t any](b io.ReadCloser, jsonTarget t) (t, error) {
 	body, err := io.ReadAll(b)
 	if err != nil {
