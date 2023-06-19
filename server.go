@@ -48,10 +48,10 @@ type CredentialsVerifier interface {
 	SessionGet(w http.ResponseWriter, r *http.Request, cookieID string) (string, bool, error)
 	SessionSave(w http.ResponseWriter, r *http.Request, userID, cookieID string) (string, error)
 
-	StoreClientDelete(client []string) error
+	/* StoreClientDelete(client []string) error
 	StoreClient(clientname string, registration Registration, methode string) (*Registration, error)
 	StoreClientGet(string) (*Registration, error)
-	StoreClientsGet() (map[string]*Registration, error)
+	StoreClientsGet() (map[string]*Registration, error) */
 
 	StoreKeyDelete(kid []string) error
 	StoreKey(keyString map[string]string) error
