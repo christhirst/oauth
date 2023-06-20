@@ -49,7 +49,7 @@ type CredentialsVerifier interface {
 	SessionSave(w http.ResponseWriter, r *http.Request, userID, cookieID string) (string, error)
 
 	StoreClientDelete(client []string) error
-	StoreClient(clientname string, registration Registration, methode string) (*Registration, error)
+	//StoreClient(clientname string, registration Registration, methode string) (*Registration, error)
 	StoreClientGet(string) (*Registration, error)
 	StoreClientsGet() (map[string]*Registration, error)
 	//
