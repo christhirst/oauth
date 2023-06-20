@@ -52,7 +52,7 @@ type CredentialsVerifier interface {
 	StoreClient(clientname string, registration Registration, methode string) (*Registration, error)
 	StoreClientGet(string) (*Registration, error)
 	StoreClientsGet() (map[string]*Registration, error)
-
+	//
 	StoreKeyDelete(kid []string) error
 	StoreKey(keyString map[string]string) error
 	StoreKeysGet() (map[string]rsa.PrivateKey, error)
