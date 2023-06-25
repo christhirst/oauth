@@ -16,6 +16,10 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Err(err).Msg("Form Value not present")
 	}
+	authheader := r.Header.Get("Authorization")
+	fmt.Println(authheader)
+
+	bs.Verifier.ValidateClient(formMap["client_id"][0], formMap["redirect_uri"][0])
 
 	code := formMap["code"][0]
 	redirect_uri := formMap["redirect_uri"]
