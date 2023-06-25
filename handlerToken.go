@@ -23,9 +23,10 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 	idToken := strings.Split(authheader, " ")[1]
 	fmt.Println(idToken)
 	dIdToken, _ := base64.RawStdEncoding.DecodeString(idToken)
-	fmt.Println(dIdToken)
+	eee := strings.Split(string(dIdToken), " ")
+	fmt.Println(eee)
 
-	bs.Verifier.ValidateClient(formMap["client_id"][0], formMap["redirect_uri"][0])
+	bs.Verifier.ValidateClient(eee[0], eee[1])
 
 	code := formMap["code"][0]
 	redirect_uri := formMap["redirect_uri"]
