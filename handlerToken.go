@@ -25,7 +25,7 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 	idToken := strings.Split(authheader, " ")[1]
 	fmt.Println(idToken)
 	dIdToken, _ := base64.RawStdEncoding.DecodeString(idToken)
-	eee := strings.Split(string(dIdToken), " ")
+	eee := strings.Split(string(dIdToken), ":")
 	fmt.Println(eee)
 
 	bs.Verifier.ValidateClient(eee[0], eee[1])
