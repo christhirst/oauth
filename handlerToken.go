@@ -18,6 +18,8 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Err(err).Msg("Form Value not present")
 	}
+
+	//TODO from gohelper
 	authheader := r.Header.Get("Authorization")
 	fmt.Println(authheader)
 	idToken := strings.Split(authheader, " ")[1]
