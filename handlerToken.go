@@ -1,8 +1,10 @@
 package oauth
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/rs/zerolog/log"
 )
@@ -18,6 +20,10 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 	}
 	authheader := r.Header.Get("Authorization")
 	fmt.Println(authheader)
+	idToken := strings.Split(authheader, " ")[1]
+	fmt.Println(idToken)
+	dIdToken, _ := base64.RawStdEncoding.DecodeString(idToken)
+	fmt.Println(dIdToken)
 
 	bs.Verifier.ValidateClient(formMap["client_id"][0], formMap["redirect_uri"][0])
 
