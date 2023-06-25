@@ -21,18 +21,17 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 
 	//TODO from gohelper
 	authheader := r.Header.Get("Authorization")
-	fmt.Println(authheader)
 	idToken := strings.Split(authheader, " ")[1]
-	fmt.Println(idToken)
 	dIdToken, _ := base64.RawStdEncoding.DecodeString(idToken)
 	eee := strings.Split(string(dIdToken), ":")
-	fmt.Println(eee)
-
-	bs.Verifier.ValidateClient(eee[0], eee[1])
+	err = bs.Verifier.ValidateClient(eee[0], eee[1])
+	if err != nil {
+		log.Error().Err(err).Msgf("Client or secret not valid")
+		return
+	}
 
 	code := formMap["code"][0]
 	redirect_uri := formMap["redirect_uri"]
-
 	grant_type := GrantType(r.FormValue("grant_type"))
 
 	codeCheck, ok := bs.Tm.GetValue(code).(CodeCheck)
@@ -51,7 +50,7 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 		[]string{codeCheck.ClientId},
 		grant_type,
 		refresh_token,
-		codeCheck.ClientId,
+		codeCheck.Code,
 		redirect_uri[0],
 		at,
 		w,
