@@ -21,9 +21,13 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 
 	//TODO from gohelper
 	authheader := r.Header.Get("Authorization")
+	fmt.Println(authheader)
 	idToken := strings.Split(authheader, " ")[1]
-	dIdToken, _ := base64.RawStdEncoding.DecodeString(idToken)
+	fmt.Println(idToken)
+	dIdToken, _ := base64.StdEncoding.DecodeString(idToken)
+	fmt.Println(string(dIdToken))
 	eee := strings.Split(string(dIdToken), ":")
+	fmt.Println(eee)
 
 	err = bs.Verifier.ValidateClient(eee[0], eee[1])
 	if err != nil {

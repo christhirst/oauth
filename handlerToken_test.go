@@ -26,7 +26,7 @@ func TestTokenEndpoint(t *testing.T) {
 	form.Add("code", "test")
 	form.Add("redirect_uri", "http://localhost:8080")
 
-	req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte("clientID:clientSecret")))
+	req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte("clientID:TestSecret")))
 	rr := httptest.NewRecorder()
 
 	bs := NewBearerServer(
