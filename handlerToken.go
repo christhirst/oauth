@@ -24,6 +24,7 @@ func (bs *BearerServer) TokenEndpoint(w http.ResponseWriter, r *http.Request) {
 	idToken := strings.Split(authheader, " ")[1]
 	dIdToken, _ := base64.RawStdEncoding.DecodeString(idToken)
 	eee := strings.Split(string(dIdToken), ":")
+
 	err = bs.Verifier.ValidateClient(eee[0], eee[1])
 	if err != nil {
 		log.Error().Err(err).Msgf("Client or secret not valid")

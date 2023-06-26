@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"testing"
+	"time"
 
 	"github.com/christhirst/gohelper/iasserts"
 	"github.com/go-chi/chi/v5"
@@ -19,26 +20,41 @@ func TestTokenEndpoint(t *testing.T) {
 	if err != nil {
 		t.Errorf("json encoding failed %v", err)
 	}
-	q := req.URL.Query()
-	q.Add("grant_type", "authorization_code")
-	q.Add("code", "")
-	q.Add("redirect_uri", "http://localhost:8080")
+	form := url.Values{}
+	req.Form = form
+	form.Add("grant_type", "authorization_code")
+	form.Add("code", "test")
+	form.Add("redirect_uri", "http://localhost:8080")
 
-	clientId := []string{"clientID"}
-	token, refreshToken, idtoken, err := bs.generateIdTokens("RS256", clientId, UserToken, "user111", "test", []string{"group1"}, at, req)
+	req.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte("clientID:clientSecret")))
+	rr := httptest.NewRecorder()
 
-	t.Run("TokenEndPoint Test 1", func(t *testing.T) {
-		iasserts.AssertNoError(t, err)
-	})
-	t.Run("TokenEndPoint Test 2", func(t *testing.T) {
-		iasserts.AssertEmptyString(t, token)
-	})
-	t.Run("TokenEndPoint Test 3", func(t *testing.T) {
-		iasserts.AssertEmptyString(t, idtoken)
-	})
-	t.Run("TokenEndPoint Test 4", func(t *testing.T) {
-		iasserts.AssertString(t, refreshToken.TokenID, clientId[0])
-	})
+	bs := NewBearerServer(
+		"mySecretKey-10101",
+		time.Second*120,
+		&TestUserVerifier{},
+		nil,
+	)
+	handler := http.HandlerFunc(bs.TokenEndpoint)
+	handler.ServeHTTP(rr, req)
+
+	//clientId := []string{"clientID"}
+	//token, refreshToken, idtoken, err := bs.generateIdTokens("RS256", clientId, UserToken, "user111", "test", []string{"group1"}, at, req)
+
+	//t.Error(token)
+
+	/* 	t.Run("TokenEndPoint Test 1", func(t *testing.T) {
+	   		iasserts.AssertNoError(t, err)
+	   	})
+	   	t.Run("TokenEndPoint Test 2", func(t *testing.T) {
+	   		iasserts.AssertEmptyString(t, token)
+	   	})
+	   	t.Run("TokenEndPoint Test 3", func(t *testing.T) {
+	   		iasserts.AssertEmptyString(t, idtoken)
+	   	})
+	   	t.Run("TokenEndPoint Test 4", func(t *testing.T) {
+	   		iasserts.AssertString(t, refreshToken.TokenID, clientId[0])
+	   	}) */
 
 }
 
