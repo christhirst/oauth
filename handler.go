@@ -19,15 +19,7 @@ import (
 var refresh_token, redirect_uri string
 var at AuthToken
 
-func (bs *BearerServer) Registration(w http.ResponseWriter, r *http.Request) {
-	/* authH := r.Header.Get("Authorization")
-	//groups, err := bs.Verifier.ExtractJWTtoUserGroup(authH)
-	if err != nil {
-		log.Error().Err(err).Msg("Unable to ExtractUser from JWT")
-	} */
-	//iamAdmin := slices.Contains(groups, "group1")
-	//ww, _ := bs.Verifier.SignAdminInMethod("", w, r)
-
+/* func (bs *BearerServer) Registration(w http.ResponseWriter, r *http.Request) {
 	iamAdmin := true
 	if iamAdmin {
 		switch r.Method {
@@ -68,7 +60,7 @@ func (bs *BearerServer) Registration(w http.ResponseWriter, r *http.Request) {
 			log.Error().Msg("failed")
 		}
 	}
-}
+} */
 
 func (bs *BearerServer) ConnectionTargetEp(w http.ResponseWriter, r *http.Request) {
 	if true {
