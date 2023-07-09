@@ -270,7 +270,7 @@ type Registration struct {
 	Grant_types                     string   `json:"grant_types,omitempty"`
 	Application_type                string   `json:"application_type,omitempty"`
 	Contacts                        []string `json:"contacts,omitempty"`
-	Client_name                     string   `json:"client_name,omitempty"`
+	Client_name                     string   `json:"client_name"`
 	Logo_uri                        string   `json:"logo_uri,omitempty"`
 	Client_uri                      string   `json:"client_uri,omitempty"`
 	Policy_uri                      string   `json:"policy_uri,omitempty"`
