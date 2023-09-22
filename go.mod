@@ -1,6 +1,6 @@
 module github.com/christhirst/oauth
 
-go 1.18
+go 1.21
 
 require (
 	github.com/MicahParks/keyfunc v1.1.0
